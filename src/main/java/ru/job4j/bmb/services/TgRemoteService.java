@@ -42,22 +42,7 @@ public class TgRemoteService extends TelegramLongPollingBot {
     }
 
     @Override
-    public String getBotToken() {
-        return botToken;
-    }
-
-    @Override
-    public String getBotUsername() {
-        return botName;
-    }
-
-    @Override
     public void onUpdateReceived(Update update) {
-        if (update.hasCallbackQuery()) {
-            var data = update.getCallbackQuery().getData();
-            var chatId = update.getCallbackQuery().getMessage().getChatId();
-            send(new SendMessage(String.valueOf(chatId), MOOD_RESP.get(data)));
-        }
         if (update.hasMessage() && update.getMessage().hasText()) {
             var message = update.getMessage();
             if ("/start".equals(message.getText())) {
@@ -66,10 +51,25 @@ public class TgRemoteService extends TelegramLongPollingBot {
                 user.setFirstname(message.getFrom().getFirstName());
                 user.setClientId(message.getFrom().getId());
                 user.setChatId(chatId);
-                userRepository.add(user);
+                userRepository.save(user);
                 send(sendButtons(chatId));
             }
         }
+        if (update.hasCallbackQuery()) {
+            var data = update.getCallbackQuery().getData();
+            var chatId = update.getCallbackQuery().getMessage().getChatId();
+            send(new SendMessage(String.valueOf(chatId), MOOD_RESP.get(data)));
+        }
+    }
+
+    @Override
+    public String getBotToken() {
+        return botToken;
+    }
+
+    @Override
+    public String getBotUsername() {
+        return botName;
     }
 
     public void send(SendMessage message) {
@@ -102,5 +102,4 @@ public class TgRemoteService extends TelegramLongPollingBot {
         inline.setCallbackData(data);
         return inline;
     }
-
 }
