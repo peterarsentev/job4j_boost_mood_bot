@@ -1,20 +1,21 @@
 package ru.job4j.bmb.model;
 
 import jakarta.persistence.*;
+
 import java.util.Objects;
 
 @Entity
-@Table (name = "mb_user")
-public class User {
+@Table(name = "mb_achievement")
+public class Achievement {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "client_id", unique = true)
-    private long clientId;
+    private String text;
 
-    @Column(name = "chat_id")
-    private long chatId;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     public Long getId() {
         return id;
@@ -24,20 +25,20 @@ public class User {
         this.id = id;
     }
 
-    public long getClientId() {
-        return clientId;
+    public String getText() {
+        return text;
     }
 
-    public void setClientId(long clientId) {
-        this.clientId = clientId;
+    public void setText(String text) {
+        this.text = text;
     }
 
-    public long getChatId() {
-        return chatId;
+    public User getUser() {
+        return user;
     }
 
-    public void setChatId(long chatId) {
-        this.chatId = chatId;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     @Override
@@ -48,7 +49,7 @@ public class User {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        var that = (User) o;
+        var that = (Achievement) o;
         return Objects.equals(id, that.id);
     }
 
