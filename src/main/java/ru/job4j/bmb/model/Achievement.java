@@ -11,11 +11,24 @@ public class Achievement {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String text;
+    private long createAt;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "award_id")
+    private Award award;
+
+    public Achievement() {
+    }
+
+    public Achievement(long createAt, User user, Award award) {
+        this.createAt = createAt;
+        this.user = user;
+        this.award = award;
+    }
 
     public Long getId() {
         return id;
@@ -25,12 +38,12 @@ public class Achievement {
         this.id = id;
     }
 
-    public String getText() {
-        return text;
+    public Award getAward() {
+        return award;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setAward(Award award) {
+        this.award = award;
     }
 
     public User getUser() {
@@ -39,6 +52,14 @@ public class Achievement {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public long getCreateAt() {
+        return createAt;
+    }
+
+    public void setCreateAt(long createAt) {
+        this.createAt = createAt;
     }
 
     @Override

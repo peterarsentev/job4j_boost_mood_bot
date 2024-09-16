@@ -13,11 +13,14 @@ public class Mood {
 
     private String text;
 
+    private boolean good;
+
     public Mood() {
     }
 
-    public Mood(String text) {
+    public Mood(String text, boolean good) {
         this.text = text;
+        this.good = good;
     }
 
     public Long getId() {
@@ -34,6 +37,14 @@ public class Mood {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    public boolean isGood() {
+        return good;
+    }
+
+    public void setGood(boolean good) {
+        this.good = good;
     }
 
     @Override

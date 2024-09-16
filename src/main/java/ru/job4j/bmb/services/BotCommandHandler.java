@@ -7,6 +7,7 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
+import ru.job4j.bmb.component.TgUI;
 import ru.job4j.bmb.content.Content;
 import ru.job4j.bmb.model.User;
 import ru.job4j.bmb.repository.MoodRepository;
@@ -21,13 +22,15 @@ public class BotCommandHandler {
     private final UserRepository userRepository;
     private final MoodRepository moodRepository;
     private final MoodService moodService;
+    private final TgUI tgUI;
 
     public BotCommandHandler(UserRepository userRepository,
                              MoodRepository moodRepository,
-                             MoodService moodService) {
+                             MoodService moodService, TgUI tgUI) {
         this.userRepository = userRepository;
         this.moodRepository = moodRepository;
         this.moodService = moodService;
+        this.tgUI = tgUI;
     }
 
     Optional<Content> receive(Update update) {
@@ -41,7 +44,7 @@ public class BotCommandHandler {
                 userRepository.save(user);
                 var content = new Content(user.getChatId());
                 content.setText("Как настроение?");
-                content.setMarkup(buildButtons());
+                content.setMarkup(tgUI.buildButtons());
                 return Optional.of(content);
             }
         }
@@ -52,22 +55,5 @@ public class BotCommandHandler {
             return Optional.of(moodService.getContent(user, moodId));
         }
         return Optional.empty();
-    }
-
-    public InlineKeyboardMarkup buildButtons() {
-        var inlineKeyboardMarkup = new InlineKeyboardMarkup();
-        List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
-        for (var mood: moodRepository.findAll()) {
-            keyboard.add(List.of(createBtn(mood.getText(), mood.getId())));
-        }
-        inlineKeyboardMarkup.setKeyboard(keyboard);
-        return inlineKeyboardMarkup;
-    }
-
-    InlineKeyboardButton createBtn(String name, Long moodId) {
-        var inline = new InlineKeyboardButton();
-        inline.setText(name);
-        inline.setCallbackData(String.valueOf(moodId));
-        return inline;
     }
 }
