@@ -10,6 +10,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
+import ru.job4j.bmb.expection.TelegramInitException;
 import ru.job4j.bmb.model.Award;
 import ru.job4j.bmb.model.Mood;
 import ru.job4j.bmb.model.MoodContent;
@@ -29,7 +30,7 @@ public class Main {
     }
 
     @Bean
-    CommandLineRunner initialize(MoodRepository moodRepository,
+    CommandLineRunner loadDatabase(MoodRepository moodRepository,
                                  MoodContentRepository moodContentRepository,
                                  AwardRepository awardRepository) {
         return args -> {
@@ -106,15 +107,14 @@ public class Main {
     }
 
     @Bean
-    public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
+    public CommandLineRunner initTelegramApi(ApplicationContext ctx) {
         return args -> {
             var bot = ctx.getBean(TelegramBotService.class);
             var botsApi = new TelegramBotsApi(DefaultBotSession.class);
             try {
                 botsApi.registerBot(bot);
-                System.out.println("Бот успешно зарегистрирован");
             } catch (TelegramApiException e) {
-                e.printStackTrace();
+                throw new TelegramInitException("Ошибка инициализации Telegram API", e);
             }
         };
     }
