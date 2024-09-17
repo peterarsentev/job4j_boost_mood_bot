@@ -26,7 +26,13 @@ public class TelegramBotService extends TelegramLongPollingBot implements SentCo
 
     @Override
     public void onUpdateReceived(Update update) {
-        handler.receive(update).ifPresent(this::sent);
+        if (update.hasCallbackQuery()) {
+            handler.handleCallback(update.getCallbackQuery())
+                    .ifPresent(this::sent);
+        } else if (update.hasMessage() && update.getMessage().getText() != null) {
+            handler.commands(update.getMessage())
+                    .ifPresent(this::sent);
+        }
     }
 
     @Override

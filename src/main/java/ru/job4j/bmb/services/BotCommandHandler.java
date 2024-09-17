@@ -1,7 +1,8 @@
 package ru.job4j.bmb.services;
 
 import org.springframework.stereotype.Service;
-import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import ru.job4j.bmb.component.TgUI;
 import ru.job4j.bmb.content.Content;
 import ru.job4j.bmb.model.MoodLog;
@@ -16,7 +17,6 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class BotCommandHandler {
@@ -41,27 +41,25 @@ public class BotCommandHandler {
         this.tgUI = tgUI;
     }
 
-    Optional<Content> receive(Update update) {
-        if (update.hasMessage() && update.getMessage().hasText()) {
-            var message = update.getMessage();
-            var text = message.getText();
-            if ("/start".equals(text)) {
-                return handleStartCommand(message.getChatId(), message.getFrom().getId());
-            } else if ("/week_mood_log".equals(text)) {
-                return handleWeekMoodLogCommand(message.getChatId(), message.getFrom().getId());
-            } else if ("/month_mood_log".equals(text)) {
-                return handleMonthMoodLogCommand(message.getChatId(), message.getFrom().getId());
-            } else if ("/award".equals(text)) {
-                return handleAwardCommand(message.getChatId(), message.getFrom().getId());
-            }
+    Optional<Content> commands(Message message) {
+        var text = message.getText();
+        if ("/start".equals(text)) {
+            return handleStartCommand(message.getChatId(), message.getFrom().getId());
+        } else if ("/week_mood_log".equals(text)) {
+            return handleWeekMoodLogCommand(message.getChatId(), message.getFrom().getId());
+        } else if ("/month_mood_log".equals(text)) {
+            return handleMonthMoodLogCommand(message.getChatId(), message.getFrom().getId());
+        } else if ("/award".equals(text)) {
+            return handleAwardCommand(message.getChatId(), message.getFrom().getId());
+        } else {
+            return Optional.empty();
         }
-        if (update.hasCallbackQuery()) {
-            var moodId = Long.valueOf(update.getCallbackQuery().getData());
-            var clientId = update.getCallbackQuery().getFrom().getId();
-            var user = userRepository.findByClientId(clientId);
-            return Optional.of(moodService.getContent(user, moodId));
-        }
-        return Optional.empty();
+    }
+
+    Optional<Content> handleCallback(CallbackQuery callback) {
+        var moodId = Long.valueOf(callback.getData());
+        var user = userRepository.findByClientId(callback.getFrom().getId());
+        return Optional.of(moodService.getContent(user, moodId));
     }
 
     private Optional<Content> handleAwardCommand(long chatId, Long clientId) {
