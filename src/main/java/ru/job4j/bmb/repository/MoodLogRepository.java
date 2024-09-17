@@ -17,4 +17,10 @@ public interface MoodLogRepository extends CrudRepository<MoodLog, Long> {
             "SELECT ml FROM MoodLog ml WHERE ml.user = u AND ml.createdAt BETWEEN :startOfDay AND :endOfDay)")
     List<User> findUsersWhoDidNotVoteToday(@Param("startOfDay") long startOfDay,
                                            @Param("endOfDay") long endOfDay);
+
+    @Query("SELECT ml FROM MoodLog ml WHERE ml.user.id = :userId AND ml.createdAt >= :weekStart")
+    List<MoodLog> findMoodLogsForWeek(@Param("userId") Long userId, @Param("weekStart") long weekStart);
+
+    @Query("SELECT ml FROM MoodLog ml WHERE ml.user.id = :userId AND ml.createdAt >= :monthStart")
+    List<MoodLog> findMoodLogsForMonth(@Param("userId") Long userId, @Param("monthStart") long monthStart);
 }
