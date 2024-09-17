@@ -49,4 +49,15 @@ public class Content {
     public void setPhoto(InputFile photo) {
         this.photo = photo;
     }
+
+    @Override
+    public String toString() {
+        return "Content{" +
+                "chatId=" + chatId +
+                ", text='" + text + '\'' +
+                ", photo=" + photo +
+                ", markup=" + markup +
+                ", audio=" + audio +
+                '}';
+    }
 }
