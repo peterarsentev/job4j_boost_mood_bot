@@ -1,7 +1,7 @@
 package ru.job4j.bmb.services;
 
 import org.springframework.stereotype.Service;
-import ru.job4j.bmb.model.Message;
+import ru.job4j.bmb.content.Content;
 
 @Service
 public class TelegramBotService {
@@ -11,7 +11,7 @@ public class TelegramBotService {
         this.handler = handler;
     }
 
-    public void receive(Message message) {
-        handler.receive(message);
+    public void receive(Content content) {
+        handler.receive(content);
     }
 }
