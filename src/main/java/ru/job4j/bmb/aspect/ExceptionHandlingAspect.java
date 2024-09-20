@@ -10,11 +10,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class ExceptionHandlingAspect {
 
-    private static final Logger logger = LoggerFactory.getLogger(ExceptionHandlingAspect.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ExceptionHandlingAspect.class);
 
     @AfterThrowing(pointcut = "execution(* ru.job4j.bmb.service.*.*(..))", throwing = "ex")
     public void handleException(Exception ex) {
-        logger.error("An error occurred: {}", ex.getMessage());
+        LOGGER.error("An error occurred: {}", ex.getMessage());
     }
 }
 

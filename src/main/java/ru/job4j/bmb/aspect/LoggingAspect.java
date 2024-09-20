@@ -12,7 +12,7 @@ import java.util.Arrays;
 @Aspect
 @Component
 public class LoggingAspect {
-    private static final Logger logger = LoggerFactory.getLogger(LoggingAspect.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(LoggingAspect.class);
 
     @Before("execution(* ru.job4j.bmb.services.*.*(..))")
     public void logBeforeMethodExecution(JoinPoint joinPoint) {
@@ -20,7 +20,7 @@ public class LoggingAspect {
         Object[] argsObj = joinPoint.getArgs();
         String args = Arrays.toString(argsObj);
         String methodName = signature.toShortString();
-        logger.info("Вызван метод:  {}", methodName );
-        logger.info("аргументы: {}", args);
+        LOGGER.info("Вызван метод:  {}", methodName );
+        LOGGER.info("аргументы: {}", args);
     }
 }
